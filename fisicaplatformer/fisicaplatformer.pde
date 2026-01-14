@@ -15,13 +15,13 @@ color gray = #7d7d7d;
 color aquamarine = #00ffbf;
 
 //terrain images
-PImage map, ice, stone, treetrunk, treetopintersect, treetopcenter, treetopl, treetopr;
+PImage ice, stone, treetrunk, treetopintersect, treetopcenter, treetopl, treetopr;
 PImage bridge, spike, trampoline;
 
 int gridSize = 32;
 float zoom = 1.5;
 
-boolean upkey, downkey, leftkey, rightkey, wkey, akey, skey, dkey, spacekey;
+boolean upkey, downkey, leftkey, rightkey, wkey, akey, skey, dkey, spacekey, switchmap;
 
 ArrayList<FGameObject> terrain;
 ArrayList<FGameObject> enemies;
@@ -32,6 +32,10 @@ PImage[] lava;
 PImage[] idle, jump, run, action;
 PImage[] goomba;
 
+PImage[] map;
+int numofmaps = 2;
+int currentmap = 0;
+
 int  numlavaframes;
 
 void setup() {
@@ -39,7 +43,9 @@ void setup() {
   Fisica.init(this);
   terrain = new ArrayList<FGameObject>();
   enemies = new ArrayList<FGameObject>();
-  map = loadImage("terrainmap1.png");
+  map = new PImage[numofmaps];
+  map[0] = loadImage("terrainmap1.png");
+  map[1] = loadImage("map2.png");
 
   //lava code---------------------------------
   numlavaframes = 6;
@@ -52,7 +58,7 @@ void setup() {
   }
   //load stuff---------------------------------
   loadterrains();
-  loadWorld(map);
+  loadWorld(map[0]);
   loadPlayer();
 }
 
@@ -116,7 +122,7 @@ void loadWorld(PImage img) {
       } else if (c == orange) {
         b.attachImage(trampoline);
         b.setName("trampoline");
-        b.setRestitution(2);
+        b.setRestitution(1.5);
         world.add(b);
       } else if (c == yellow) {
         FBridge br = new FBridge(x*gridSize, y*gridSize);
@@ -145,6 +151,7 @@ void draw() {
   drawWorld();
   actWorld();
   println(player.getVelocityY());
+  switchmap();
 }
 
 void actWorld() {
@@ -167,6 +174,19 @@ void drawWorld() {
   world.step();
   world.draw();
   popMatrix();
+}
+
+void switchmap() {
+  currentmap = (currentmap + 1) % numofmaps;
+  
+  terrain.clear();
+  enemies.clear();
+  
+  loadWorld(map[currentmap]);
+  
+  player.setPosition(0,0);
+  player.setVelocity(0,0);
+  world.add(player);
 }
 
 void loadterrains() {

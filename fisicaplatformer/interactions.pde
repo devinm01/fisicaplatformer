@@ -8,6 +8,7 @@ void keyPressed() {
   if (key == 's') skey = true;
   if (key == 'd') dkey = true;
   if (key == ' ') spacekey = true;
+  if (key == 'm') switchmap();
 }
 
 void keyReleased() {
