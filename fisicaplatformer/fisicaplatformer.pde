@@ -13,6 +13,8 @@ color orange = #ff7a06;
 color redlava = #ff0606;
 color gray = #7d7d7d;
 color aquamarine = #00ffbf;
+color pink = #ff06e2;
+color hbgreen = #44ff00;
 
 //terrain images
 PImage ice, stone, treetrunk, treetopintersect, treetopcenter, treetopl, treetopr;
@@ -30,7 +32,7 @@ FPlayer player;
 PImage[] lava;
 //images for character animations
 PImage[] idle, jump, run, action;
-PImage[] goomba;
+PImage[] goomba, thwomp, hammerbro;
 
 PImage[] map;
 int numofmaps = 2;
@@ -44,8 +46,8 @@ void setup() {
   terrain = new ArrayList<FGameObject>();
   enemies = new ArrayList<FGameObject>();
   map = new PImage[numofmaps];
-  map[0] = loadImage("terrainmap1.png");
-  map[1] = loadImage("map2.png");
+  map[1] = loadImage("terrainmap1.png");
+  map[0] = loadImage("map2.png");
 
   //lava code---------------------------------
   numlavaframes = 6;
@@ -136,6 +138,14 @@ void loadWorld(PImage img) {
         FGoomba gmb = new FGoomba(x*gridSize, y*gridSize);
         enemies.add(gmb);
         world.add(gmb);
+      } else if (c == pink) {
+        FThwomp thw = new FThwomp(x*gridSize, y*gridSize);
+        enemies.add(thw);
+        world.add(thw);
+      } else if (c == hbgreen) {
+        FHammerBro hb = new FHammerBro(x*gridSize, y*gridSize);
+        enemies.add(hb);
+        world.add(hb);
       }
     }
   }
@@ -150,8 +160,7 @@ void draw() {
   background(white);
   drawWorld();
   actWorld();
-  println(player.getVelocityY());
-  switchmap();
+  //switchmap();
 }
 
 void actWorld() {
@@ -176,18 +185,18 @@ void drawWorld() {
   popMatrix();
 }
 
-void switchmap() {
-  currentmap = (currentmap + 1) % numofmaps;
-  
-  terrain.clear();
-  enemies.clear();
-  
-  loadWorld(map[currentmap]);
-  
-  player.setPosition(0,0);
-  player.setVelocity(0,0);
-  world.add(player);
-}
+//void switchmap() {
+//  currentmap = (currentmap + 1) % numofmaps;
+
+//  terrain.clear();
+//  enemies.clear();
+
+//  loadWorld(map[currentmap]);
+
+//  player.setPosition(0,0);
+//  player.setVelocity(0,0);
+//  world.add(player);
+//}
 
 void loadterrains() {
   trampoline = loadImage("timages/trampoline.png");
@@ -223,4 +232,16 @@ void loadterrains() {
   goomba[0].resize(gridSize, gridSize);
   goomba[1] = loadImage("characters/goomba1.png");
   goomba[1].resize(gridSize, gridSize);
+
+  thwomp = new PImage[2];
+  thwomp[0] = loadImage("characters/thwomp0.png");
+  thwomp[0].resize(gridSize*2, gridSize*2);
+  thwomp[1] = loadImage("characters/thwomp1.png");
+  thwomp[1].resize(gridSize*2, gridSize*2);
+
+  hammerbro = new PImage[2];
+  hammerbro[0] = loadImage("characters/hammerbro0.png");
+  hammerbro[0].resize(gridSize, gridSize);
+  hammerbro[1] = loadImage("characters/hammerbro1.png");
+  hammerbro[1].resize(gridSize, gridSize);
 }
