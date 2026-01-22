@@ -47,6 +47,9 @@ class FPlayer extends FGameObject {
     if (isTouching("lava")) {
       setPosition(0, 0);
     }
+    if (isTouching("hammer")) {
+      setPosition(0,0);
+    }
   }
 
   void animate() {

@@ -17,10 +17,11 @@ color pink = #ff06e2;
 color hbgreen = #44ff00;
 color sbpink = #ff0088;
 color doorpink = #7a0041;
+color tpblock = #8800ff;
 
 //terrain images
 PImage ice, stone, treetrunk, treetopintersect, treetopcenter, treetopl, treetopr;
-PImage bridge, spike, trampoline, hammer, openblock;
+PImage bridge, spike, trampoline, hammer, openblock, portalblock;
 
 int gridsize = 32;
 float zoom = 1.5;
@@ -37,7 +38,7 @@ PImage[] idle, jump, run, action;
 PImage[] goomba, thwomp, hammerbro, door;
 
 PImage[] map;
-int numofmaps = 2;
+int numofmaps = 3;
 int currentmap = 0;
 
 int  numlavaframes;
@@ -50,6 +51,7 @@ void setup() {
   map = new PImage[numofmaps];
   map[1] = loadImage("terrainmap1.png");
   map[0] = loadImage("map2.png");
+  map[2] = loadImage("thwomprun.png");
 
   //lava code---------------------------------
   numlavaframes = 6;
@@ -64,6 +66,8 @@ void setup() {
   loadterrains();
   loadWorld(map[0]);
   loadPlayer();
+  
+  dooropen = false;
 }
 
 void loadWorld(PImage img) {
@@ -148,15 +152,19 @@ void loadWorld(PImage img) {
         FHammerBro hb = new FHammerBro(x*gridsize, y*gridsize);
         enemies.add(hb);
         world.add(hb);
-      } //else if (c == sbpink) {
-      //  FOpenblock ob = new FOpenblock(gridsize, gridsize);
-      //  terrain.add(ob);
-      //  world.add(ob);
-      //} else if (c == doorpink) {
-      //  FDoor dr = new FDoor(gridsize, gridsize);
-      //  terrain.add(dr);
-      //  world.add(dr);
-      //}
+      } else if (c == sbpink) {
+        FOpenblock ob = new FOpenblock(x*gridsize, y*gridsize);
+        terrain.add(ob);
+        world.add(ob);
+      } else if (c == doorpink) {
+        FDoor dr = new FDoor(x*gridsize, y*gridsize);
+        terrain.add(dr);
+        world.add(dr);
+      } else if (c == tpblock) {
+        FPortal tp = new FPortal(x*gridsize, y*gridsize);
+        terrain.add(tp);
+        world.add(tp);
+      }
     }
   }
 }
@@ -222,6 +230,8 @@ void loadterrains() {
   treetopl = loadImage("timages/treetop_e.png");
   openblock = loadImage("timages/switchblock.png");
   openblock.resize(gridsize, gridsize);
+  portalblock = loadImage("timages/portalblock.png");
+  portalblock.resize(gridsize, gridsize);
 
   //load door state----
   door = new PImage[2];
