@@ -20,11 +20,9 @@ class FThwomp extends FGameObject {
   }
   
   //-----------maybe use ints to make thwompmodes (waiting, falling rising) (?) idk
-  // if (player.getX() - getX() thwompmode = 1 idk
-  // if thwompmode = 1 then blah blah
   void move() {
     if (!falling && !rising) {
-      if (abs(player.getX() - getX()) < gridSize) {
+      if (abs(player.getX() - getX()) < gridsize) {
         falling = true;
         rising = false;
       }
@@ -48,7 +46,7 @@ class FThwomp extends FGameObject {
       rising = true;
     }
 
-    if (abs(player.getX() - getX()) < gridSize && !(player.getY() < getY() - gridSize / 1.5)) {
+    if (abs(player.getX() - getX()) < gridsize && !(player.getY() < getY() - gridsize / 1.5)) {
       rising = false;
       falling = true;
     }

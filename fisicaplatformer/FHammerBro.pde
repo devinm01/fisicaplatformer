@@ -15,6 +15,7 @@ class FHammerBro extends FGameObject {
     animate();
     move();
     collide();
+    throwhammer();
   }
 
   void animate() {
@@ -36,9 +37,9 @@ class FHammerBro extends FGameObject {
       direction *= -1;
       setPosition(getX()+direction, getY());
     }
-    
+
     if (isTouching("player")) {
-      if (player.getY() < getY()-gridSize*0.9) {
+      if (player.getY() < getY()-gridsize*0.9) {
         world.remove(this);
         enemies.remove(this);
         player.setVelocity(player.getVelocityX(), -300);
@@ -46,6 +47,27 @@ class FHammerBro extends FGameObject {
         //player.lives--;
         player.setPosition(100, 0);
       }
+    }
+  }
+
+  void throwhammer() {
+    if (frameCount % 80 == 0) {
+      FBox h = new FBox(gridsize, gridsize);
+      h.setName("hammer");
+      h.setPosition(getX(), getY());
+      h.attachImage(hammer);
+
+      if (direction == R) h.setVelocity(400, -400);
+      if (direction == L) h.setVelocity(-400, -400);
+      
+      if(isTouching("player")) {
+        world.remove(this);
+        player.setPosition(100,0);
+      }
+
+      h.setAngularVelocity(20);
+      h.setSensor(true);
+      world.add(h);
     }
   }
 }

@@ -15,15 +15,17 @@ color gray = #7d7d7d;
 color aquamarine = #00ffbf;
 color pink = #ff06e2;
 color hbgreen = #44ff00;
+color sbpink = #ff0088;
+color doorpink = #7a0041;
 
 //terrain images
 PImage ice, stone, treetrunk, treetopintersect, treetopcenter, treetopl, treetopr;
-PImage bridge, spike, trampoline;
+PImage bridge, spike, trampoline, hammer, openblock;
 
-int gridSize = 32;
+int gridsize = 32;
 float zoom = 1.5;
 
-boolean upkey, downkey, leftkey, rightkey, wkey, akey, skey, dkey, spacekey, switchmap;
+boolean upkey, downkey, leftkey, rightkey, wkey, akey, skey, dkey, spacekey, switchmap, dooropen;
 
 ArrayList<FGameObject> terrain;
 ArrayList<FGameObject> enemies;
@@ -32,7 +34,7 @@ FPlayer player;
 PImage[] lava;
 //images for character animations
 PImage[] idle, jump, run, action;
-PImage[] goomba, thwomp, hammerbro;
+PImage[] goomba, thwomp, hammerbro, door;
 
 PImage[] map;
 int numofmaps = 2;
@@ -55,7 +57,7 @@ void setup() {
   int i = 0;
   while (i < numlavaframes) {
     lava[i] = loadImage("timages/lava" + i + ".png");
-    lava[i].resize(gridSize, gridSize);
+    lava[i].resize(gridsize, gridsize);
     i++;
   }
   //load stuff---------------------------------
@@ -74,8 +76,8 @@ void loadWorld(PImage img) {
       color s = img.get(x, y+1); //c below pixel
       color w = img.get(x-1, y); //c west pixel
       color e = img.get(x+1, y); //c east pixel
-      FBox b = new FBox(gridSize, gridSize);
-      b.setPosition(x*gridSize, y*gridSize);
+      FBox b = new FBox(gridsize, gridsize);
+      b.setPosition(x*gridsize, y*gridsize);
       b.setStatic(true);
       if (c == black) {
         b.attachImage(stone);
@@ -127,26 +129,34 @@ void loadWorld(PImage img) {
         b.setRestitution(1.5);
         world.add(b);
       } else if (c == yellow) {
-        FBridge br = new FBridge(x*gridSize, y*gridSize);
+        FBridge br = new FBridge(x*gridsize, y*gridsize);
         terrain.add(br);
         world.add(br);
       } else if (c == redlava) {
-        FLava la = new FLava(x*gridSize, y*gridSize, int(random(0, 6)));
+        FLava la = new FLava(x*gridsize, y*gridsize, int(random(0, 6)));
         terrain.add(la);
         world.add(la);
       } else if (c == aquamarine) {
-        FGoomba gmb = new FGoomba(x*gridSize, y*gridSize);
+        FGoomba gmb = new FGoomba(x*gridsize, y*gridsize);
         enemies.add(gmb);
         world.add(gmb);
       } else if (c == pink) {
-        FThwomp thw = new FThwomp(x*gridSize, y*gridSize);
+        FThwomp thw = new FThwomp(x*gridsize, y*gridsize);
         enemies.add(thw);
         world.add(thw);
       } else if (c == hbgreen) {
-        FHammerBro hb = new FHammerBro(x*gridSize, y*gridSize);
+        FHammerBro hb = new FHammerBro(x*gridsize, y*gridsize);
         enemies.add(hb);
         world.add(hb);
-      }
+      } //else if (c == sbpink) {
+      //  FOpenblock ob = new FOpenblock(gridsize, gridsize);
+      //  terrain.add(ob);
+      //  world.add(ob);
+      //} else if (c == doorpink) {
+      //  FDoor dr = new FDoor(gridsize, gridsize);
+      //  terrain.add(dr);
+      //  world.add(dr);
+      //}
     }
   }
 }
@@ -203,13 +213,20 @@ void loadterrains() {
   bridge = loadImage("timages/bridge_center.png");
   spike = loadImage("timages/spike.png");
   ice = loadImage("timages/blueBlock.png");
-  ice.resize(gridSize, gridSize);
+  ice.resize(gridsize, gridsize);
   stone = loadImage("timages/brick.png");
   treetrunk = loadImage("timages/tree_trunk.png");
   treetopintersect = loadImage("timages/tree_intersect.png");
   treetopcenter = loadImage("timages/treetop_center.png");
   treetopr = loadImage("timages/treetop_w.png");
   treetopl = loadImage("timages/treetop_e.png");
+  openblock = loadImage("timages/switchblock.png");
+  openblock.resize(gridsize, gridsize);
+
+  //load door state----
+  door = new PImage[2];
+  door[0] = loadImage("timages/doortile.png");
+  door[1] = loadImage("timages/opendoortile.png");
 
   //load mario actions--------------------------
   idle = new PImage[2];
@@ -229,19 +246,20 @@ void loadterrains() {
   //load enemies actions----------
   goomba = new PImage[2];
   goomba[0] = loadImage("characters/goomba0.png");
-  goomba[0].resize(gridSize, gridSize);
+  goomba[0].resize(gridsize, gridsize);
   goomba[1] = loadImage("characters/goomba1.png");
-  goomba[1].resize(gridSize, gridSize);
+  goomba[1].resize(gridsize, gridsize);
 
   thwomp = new PImage[2];
   thwomp[0] = loadImage("characters/thwomp0.png");
-  thwomp[0].resize(gridSize*2, gridSize*2);
+  thwomp[0].resize(gridsize*2, gridsize*2);
   thwomp[1] = loadImage("characters/thwomp1.png");
-  thwomp[1].resize(gridSize*2, gridSize*2);
+  thwomp[1].resize(gridsize*2, gridsize*2);
 
   hammerbro = new PImage[2];
   hammerbro[0] = loadImage("characters/hammerbro0.png");
-  hammerbro[0].resize(gridSize, gridSize);
+  hammerbro[0].resize(gridsize, gridsize);
   hammerbro[1] = loadImage("characters/hammerbro1.png");
-  hammerbro[1].resize(gridSize, gridSize);
+  hammerbro[1].resize(gridsize, gridsize);
+  hammer = loadImage("characters/hammer.png");
 }
